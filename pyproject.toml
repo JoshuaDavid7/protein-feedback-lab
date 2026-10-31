@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "protein-feedback-lab"
+version = "0.1.0"
+description = "Auditable protein-variant post-training with experimental-measurement replay"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["numpy>=1.26,<2", "torch>=2.2,<3", "scipy>=1.11", "scikit-learn>=1.4", "matplotlib>=3.8"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+cloud = ["modal==1.6.3", "cbor2<6"]
+
+[project.scripts]
+protein-feedback = "protein_feedback.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+

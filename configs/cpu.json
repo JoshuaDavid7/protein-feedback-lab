@@ -1,0 +1,23 @@
+{
+  "name": "cpu_pilot",
+  "seeds": [11, 23, 37],
+  "methods": ["random", "frozen", "weighted_sft", "ppo", "dpo", "rf_ucb"],
+  "model": {"width": 32, "layers": 2, "heads": 4, "context": 128},
+  "device": "cpu",
+  "threads": 4,
+  "pool_size": 512,
+  "evaluation_size": 512,
+  "initial_size": 128,
+  "budget": 64,
+  "batch_size": 8,
+  "initial_steps": 80,
+  "initial_lr": 0.003,
+  "update_epochs": 3,
+  "posttrain_lr": 0.0003,
+  "kl_coefficient": 0.02,
+  "dpo_beta": 0.1,
+  "rf_ucb_scale": 1.0,
+  "top_k": 20,
+  "protein_corpus_steps": 0
+}
+

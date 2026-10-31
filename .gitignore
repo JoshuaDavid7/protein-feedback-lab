@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.DS_Store
+data/
+artifacts/
+*.pt
+*.pth
+.env
+*.token
+.modal.toml
+cloud-output/
+

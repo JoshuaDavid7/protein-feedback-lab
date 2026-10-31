@@ -1,0 +1,22 @@
+{
+  "name": "smoke",
+  "seeds": [11],
+  "methods": ["random", "frozen", "weighted_sft", "ppo", "dpo", "rf_ucb"],
+  "model": {"width": 16, "layers": 1, "heads": 2, "context": 128},
+  "device": "cpu",
+  "threads": 2,
+  "pool_size": 64,
+  "evaluation_size": 64,
+  "initial_size": 32,
+  "budget": 8,
+  "batch_size": 4,
+  "initial_steps": 5,
+  "initial_lr": 0.003,
+  "update_epochs": 1,
+  "posttrain_lr": 0.0003,
+  "kl_coefficient": 0.02,
+  "dpo_beta": 0.1,
+  "rf_ucb_scale": 1.0,
+  "top_k": 10,
+  "protein_corpus_steps": 0
+}

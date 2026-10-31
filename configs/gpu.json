@@ -1,0 +1,25 @@
+{
+  "name": "gpu_study",
+  "seeds": [11, 23, 37, 53, 71],
+  "methods": ["random", "frozen", "weighted_sft", "ppo", "dpo", "rf_ucb"],
+  "model": {"width": 256, "layers": 4, "heads": 8, "context": 128},
+  "device": "cuda",
+  "threads": 4,
+  "pool_size": 4096,
+  "evaluation_size": 4096,
+  "initial_size": 128,
+  "budget": 256,
+  "batch_size": 16,
+  "initial_steps": 160,
+  "initial_lr": 0.0005,
+  "update_epochs": 4,
+  "posttrain_lr": 0.0001,
+  "kl_coefficient": 0.02,
+  "dpo_beta": 0.1,
+  "rf_ucb_scale": 1.0,
+  "top_k": 20,
+  "protein_corpus_steps": 1500,
+  "protein_corpus_sequences": 32000,
+  "protein_corpus_batch_size": 64
+}
+
