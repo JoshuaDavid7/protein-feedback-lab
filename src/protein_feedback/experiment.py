@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import importlib.metadata
 import json
 import platform
 import subprocess
@@ -77,6 +78,8 @@ def run_experiment(config: dict, output: Path, data_root: Path):
         "code_dirty": dirty,
         "python": platform.python_version(),
         "torch": torch.__version__,
+        "packages": {d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},
+        "cuda_matmul_tf32": bool(torch.backends.cuda.matmul.allow_tf32),
         "platform": platform.platform(),
         "device": device,
         "gpu": torch.cuda.get_device_name(0) if device == "cuda" else None,

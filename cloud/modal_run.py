@@ -23,7 +23,12 @@ image = (
         "scikit-learn==1.6.1",
         "matplotlib==3.10.3",
     )
-    .add_local_dir("src/protein_feedback", "/root/protein_feedback", copy=True)
+    .add_local_dir(
+        "src/protein_feedback",
+        "/root/protein_feedback",
+        copy=True,
+        ignore=["**/__pycache__/**", "**/*.pyc"],
+    )
 )
 
 # Pricing checked 2026-10-31: A100-40GB $0.000583/sec; CPU

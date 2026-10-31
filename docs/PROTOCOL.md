@@ -72,12 +72,15 @@ log q(v_j) minus log(1 - sum of q(v_i) over earlier draws). Both old and updated
 policy probabilities include this changing denominator. Treating these draws as
 iid would give the wrong PPO likelihood ratio.
 
-PPO uses the clipped surrogate (epsilon 0.2), log(1 + measured fitness), a scalar
-reward baseline updated between batches, and reward scaling estimated from the
-initial labeled set. A KL penalty constrains the current finite-pool policy to
-the frozen initial reference, conditioned on the same remaining candidates.
-This is a one-step/bandit formulation. It does not implement long-horizon credit
-assignment, GAE, a learned critic, or novel RL algorithms.
+PPO uses the clipped surrogate (epsilon 0.2) and within-batch reward-to-go on
+log(1 + measured fitness). Earlier choices affect later availability, so using
+only each draw's immediate reward would omit future-choice effects. The baseline
+is a scalar mean reward from previous measurements, multiplied by remaining
+batch length; reward scale is estimated from the initial labeled set. The
+reference KL averages the conditional distributions at the visited prefix states.
+Each acquisition batch is a short episode; there is no cross-batch credit
+assignment, GAE, learned critic, or novel RL algorithm. An enumeration test checks
+that the reward-to-go gradient matches the exact expected batch-return gradient.
 
 ## DPO and baselines
 

@@ -9,6 +9,7 @@
 4. Derive the denominator for the second and third draw in a batch sampled
    without replacement. Where does it enter the PPO importance ratio?
 5. What do positive and negative advantages do at PPO's clipping boundaries?
+   Why do earlier draws also receive credit for rewards later in the same batch?
 6. Why can the reference-relative log-probability difference be used in DPO?
    What are the limitations of treating noisy assay ranks as preferences?
 7. Why include reward-weighted supervised learning and RF-UCB? What would an

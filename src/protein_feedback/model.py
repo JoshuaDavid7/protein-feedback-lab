@@ -134,16 +134,36 @@ def score_variants(
     return torch.cat(pieces)
 
 
+def conditional_log_distributions(logits: torch.Tensor, selected: torch.Tensor) -> torch.Tensor:
+    """Distribution at each visited state, with earlier choices masked out."""
+    count = len(selected)
+    mask = torch.zeros((count, len(logits)), dtype=torch.bool, device=logits.device)
+    rows, columns = torch.tril_indices(count, count, offset=-1, device=logits.device)
+    mask[rows, selected[columns]] = True
+    return F.log_softmax(logits[None].expand(count, -1).masked_fill(mask, -torch.inf), dim=1)
+
+
 def conditional_draw_log_probs(logits: torch.Tensor, selected: torch.Tensor) -> torch.Tensor:
     """Exact ordered, without-replacement log probabilities (Plackett-Luce).
 
     Removing earlier draws changes the denominator for each subsequent draw.
     Keeping these denominators is important for a correct PPO likelihood ratio.
     """
-    logp = F.log_softmax(logits, dim=0)
-    chosen = logp[selected]
-    previous_mass = torch.cat([chosen.new_zeros(1), chosen.exp().cumsum(0)[:-1]])
-    return chosen - torch.log1p(-previous_mass.clamp(max=1 - 1e-7))
+    logp = conditional_log_distributions(logits, selected)
+    return logp[torch.arange(len(selected), device=selected.device), selected]
+
+
+def conditional_kl(
+    new_logits: torch.Tensor, reference_logits: torch.Tensor, selected: torch.Tensor
+) -> torch.Tensor:
+    new = conditional_log_distributions(new_logits, selected)
+    reference = conditional_log_distributions(reference_logits, selected)
+    difference = (new - reference).masked_fill(~torch.isfinite(new), 0)
+    return (new.exp() * difference).sum(1).mean()
+
+
+def returns_to_go(rewards: torch.Tensor) -> torch.Tensor:
+    return rewards.flip(0).cumsum(0).flip(0)
 
 
 def ppo_clipped_loss(
@@ -169,6 +189,7 @@ def seed_all(seed: int, threads: int = 4):
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+        torch.backends.cuda.matmul.allow_tf32 = True
 
 
 def train_initial(

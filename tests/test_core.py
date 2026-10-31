@@ -12,9 +12,11 @@ from protein_feedback.model import (
     ProteinTransformer,
     action_log_probs,
     conditional_draw_log_probs,
+    conditional_kl,
     domain_tokens,
     dpo_loss,
     ppo_clipped_loss,
+    returns_to_go,
     seed_all,
 )
 from protein_feedback.pretrain import language_batch
@@ -64,6 +66,39 @@ def test_without_replacement_denominator_is_not_iid():
     logits = torch.log(torch.tensor([0.6, 0.3, 0.1], dtype=torch.float64))
     result = conditional_draw_log_probs(logits, torch.tensor([0, 1]))
     torch.testing.assert_close(result.exp(), torch.tensor([0.6, 0.75], dtype=torch.float64))
+
+
+def test_concentrated_policy_has_stable_remaining_draws():
+    logits = torch.tensor([1000.0, 0.0, -1.0], dtype=torch.float64)
+    result = conditional_draw_log_probs(logits, torch.tensor([0, 1]))
+    assert torch.isfinite(result).all()
+    assert float(result[1].exp()) == pytest.approx(1 / (1 + math.exp(-1)))
+
+
+def test_reference_kl_is_finite_at_masked_prefixes():
+    x = torch.tensor([0.7, -0.2, 0.4], dtype=torch.float64)
+    selected = torch.tensor([1, 2])
+    assert float(conditional_kl(x, x, selected)) == pytest.approx(0)
+    assert float(conditional_kl(x, -x, selected)) > 0
+
+
+def test_reward_to_go_gradient_matches_exact_batch_return_gradient():
+    theta = torch.tensor([0.2, -0.5, 0.8], dtype=torch.float64, requires_grad=True)
+    rewards = torch.tensor([1.0, 0.0, 3.0], dtype=torch.float64)
+    expected = theta.new_zeros(())
+    policy_surrogate = theta.new_zeros(())
+    for order in itertools.permutations(range(3), 2):
+        selected = torch.tensor(order)
+        logp = conditional_draw_log_probs(theta, selected)
+        probability = logp.sum().exp()
+        expected = expected + probability * rewards[selected].sum()
+        policy_surrogate = (
+            policy_surrogate
+            + probability.detach() * (logp * returns_to_go(rewards[selected])).sum()
+        )
+    exact = torch.autograd.grad(expected, theta, retain_graph=True)[0]
+    estimated = torch.autograd.grad(policy_surrogate, theta)[0]
+    torch.testing.assert_close(exact, estimated, rtol=1e-8, atol=1e-9)
 
 
 def test_ppo_positive_advantage_clips_upward_ratio():

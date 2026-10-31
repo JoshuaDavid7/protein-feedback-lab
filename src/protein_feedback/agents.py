@@ -15,8 +15,10 @@ from .model import (
     ProteinTransformer,
     action_log_probs,
     conditional_draw_log_probs,
+    conditional_kl,
     dpo_loss,
     ppo_clipped_loss,
+    returns_to_go,
     score_variants,
 )
 
@@ -112,15 +114,13 @@ def run_agent(
         step_info = {"queries": len(oracle.queried)}
 
         if method == "ppo":
-            advantage = torch.as_tensor(
-                (rewards - baseline) / reward_scale, dtype=torch.float32, device=device
-            )
-            ref_logq = F.log_softmax(ref_scores[remaining_ids], dim=0)
+            reward_tensor = torch.as_tensor(rewards, dtype=torch.float32, device=device)
+            lifetime = torch.arange(count, 0, -1, dtype=torch.float32, device=device)
+            advantage = (returns_to_go(reward_tensor) - baseline * lifetime) / reward_scale
             for _ in range(config["update_epochs"]):
                 new_logits = score_variants(model, candidate_tokens, device, grad=True)
                 new_draw = conditional_draw_log_probs(new_logits, selected)
-                logq = F.log_softmax(new_logits, dim=0)
-                kl = (logq.exp() * (logq - ref_logq)).sum()
+                kl = conditional_kl(new_logits, ref_scores[remaining_ids], selected)
                 objective = ppo_clipped_loss(new_draw, old_draw, advantage)
                 loss = objective + config["kl_coefficient"] * kl
                 optimizer.zero_grad(set_to_none=True)
