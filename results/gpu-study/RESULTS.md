@@ -32,7 +32,7 @@ The FLIP `keep` mask is outcome-dependent and is deliberately unused. The long f
 ## Recompute these numbers
 
 ```bash
-protein-feedback verify --output artifacts/gpu-study-v1 --data data
+protein-feedback verify --output results/gpu-study --data data
 ```
 
 ## Corpus pretraining

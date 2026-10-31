@@ -79,6 +79,17 @@ protein-feedback verify --output artifacts/cpu-pilot
 The smoke configuration checks the complete path; it is not a research result.
 Completed output directories cannot be overwritten.
 
+To verify the checked-in reports without retraining:
+
+```bash
+protein-feedback fetch
+protein-feedback verify --output results/cpu-pilot
+protein-feedback verify --output results/gpu-study
+```
+
+These commands recompute the metrics from frozen recommendations and the pinned
+GB1 measurements. They do not start a cloud job.
+
 ## GPU study
 
 ```bash

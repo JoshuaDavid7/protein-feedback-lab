@@ -32,5 +32,5 @@ The FLIP `keep` mask is outcome-dependent and is deliberately unused. The long f
 ## Recompute these numbers
 
 ```bash
-protein-feedback verify --output artifacts/cpu-pilot-v2 --data data
+protein-feedback verify --output results/cpu-pilot --data data
 ```
