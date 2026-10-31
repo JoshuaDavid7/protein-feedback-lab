@@ -198,18 +198,26 @@ def make_report(output: Path):
     ]
     if corpus is not None:
         lines += [
-            "## Corpus pretraining", "",
-            f"{corpus['tokens_seen']:,} amino-acid targets; "
-            f"{corpus['training_proteins']:,} sampled training proteins and "
-            f"{corpus['validation_proteins']:,} validation proteins. "
-            "All study seeds share this corpus checkpoint; the acquisition/adaptation "
-            "runs are separately seeded.", "",
-            "![Pretraining diagnostics](figures/pretraining.png)", "",
-            "This learning curve is not evidence of frontier-model capabilities or "
-            "structure-aware generalization. There is no homology-disjoint test or "
-            "language-model baseline comparison. The CPU and GPU configurations also "
-            "differ in model size, so their comparison does not isolate the effect of "
-            "corpus pretraining.", "",
+            "## Corpus pretraining",
+            "",
+            (
+                f"{corpus['tokens_seen']:,} amino-acid targets; "
+                f"{corpus['training_proteins']:,} sampled training proteins and "
+                f"{corpus['validation_proteins']:,} validation proteins. "
+                "All study seeds share this corpus checkpoint; the acquisition/adaptation "
+                "runs are separately seeded."
+            ),
+            "",
+            "![Pretraining diagnostics](figures/pretraining.png)",
+            "",
+            (
+                "This learning curve is not evidence of frontier-model capabilities or "
+                "structure-aware generalization. There is no homology-disjoint test or "
+                "language-model baseline comparison. The CPU and GPU configurations also "
+                "differ in model size, so their comparison does not isolate the effect of "
+                "corpus pretraining."
+            ),
+            "",
         ]
     (output / "RESULTS.md").write_text("\n".join(lines))
     # Matplotlib emits insignificant trailing spaces in SVG path data. Keep
