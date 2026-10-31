@@ -111,6 +111,24 @@ def make_report(output: Path):
     fig.savefig(figure_dir / "heldout.svg")
     plt.close(fig)
 
+    corpus = results.get("corpus_pretraining")
+    if corpus is not None:
+        history = corpus["history"]
+        x = np.asarray([row["tokens"] for row in history]) / 1e6
+        fig, axes = plt.subplots(1, 2, figsize=(10.5, 3.6), layout="constrained")
+        axes[0].plot(x, [r["train_nll"] for r in history], label="training batch", alpha=0.7)
+        axes[0].plot(x, [r["validation_nll"] for r in history], label="fixed validation crops")
+        axes[0].set_ylabel("Next-amino-acid negative log likelihood")
+        axes[0].legend(fontsize=8)
+        axes[1].plot(x, [r["gradient_norm"] for r in history], color="#8757a5")
+        axes[1].set_ylabel("Gradient norm before clipping")
+        for ax in axes:
+            ax.set_xlabel("Training tokens (millions)")
+        fig.suptitle("From-scratch protein language-model training")
+        fig.savefig(figure_dir / "pretraining.png", dpi=170)
+        fig.savefig(figure_dir / "pretraining.svg")
+        plt.close(fig)
+
     lines = [
         "# Results",
         "",
@@ -178,4 +196,23 @@ def make_report(output: Path):
         "```",
         "",
     ]
+    if corpus is not None:
+        lines += [
+            "## Corpus pretraining", "",
+            f"{corpus['tokens_seen']:,} amino-acid targets; "
+            f"{corpus['training_proteins']:,} sampled training proteins and "
+            f"{corpus['validation_proteins']:,} validation proteins. "
+            "All study seeds share this corpus checkpoint; the acquisition/adaptation "
+            "runs are separately seeded.", "",
+            "![Pretraining diagnostics](figures/pretraining.png)", "",
+            "This learning curve is not evidence of frontier-model capabilities or "
+            "structure-aware generalization. There is no homology-disjoint test or "
+            "language-model baseline comparison. The CPU and GPU configurations also "
+            "differ in model size, so their comparison does not isolate the effect of "
+            "corpus pretraining.", "",
+        ]
     (output / "RESULTS.md").write_text("\n".join(lines))
+    # Matplotlib emits insignificant trailing spaces in SVG path data. Keep
+    # checked-in scientific figures clean without altering their geometry.
+    for path in figure_dir.glob("*.svg"):
+        path.write_text("\n".join(line.rstrip() for line in path.read_text().splitlines()) + "\n")

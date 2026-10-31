@@ -1,0 +1,29 @@
+{
+  "checks": [
+    {
+      "method": "frozen",
+      "seed": 11,
+      "cpu_vs_frozen_gpu_max_abs_error": 0.0005588531494140625,
+      "checked_sequences": 8
+    },
+    {
+      "method": "weighted_sft",
+      "seed": 11,
+      "cpu_vs_frozen_gpu_max_abs_error": 0.0006570816040039062,
+      "checked_sequences": 8
+    },
+    {
+      "method": "ppo",
+      "seed": 11,
+      "cpu_vs_frozen_gpu_max_abs_error": 0.00048828125,
+      "checked_sequences": 8
+    },
+    {
+      "method": "dpo",
+      "seed": 11,
+      "cpu_vs_frozen_gpu_max_abs_error": 0.00093841552734375,
+      "checked_sequences": 8
+    }
+  ],
+  "note": "CPU float32 vs GPU TF32; numerical tolerance 0.01 log-probability units."
+}

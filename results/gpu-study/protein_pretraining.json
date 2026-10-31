@@ -1,0 +1,127 @@
+{
+  "source_url": "https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz",
+  "source_sha256": "a9c3496aa727e61d25d9e1291c9ba28d2c2ad19c0e26569dc083d53ec4169536",
+  "source_version_note": "Current-release download; exact bytes pinned by this run's SHA256.",
+  "license": "CC BY 4.0",
+  "valid_source_proteins": 566844,
+  "training_proteins": 28764,
+  "validation_proteins": 3236,
+  "split_caveat": "Accession split, not a homology-disjoint generalization benchmark.",
+  "parameters": 3203072,
+  "tokens_seen": 11750198,
+  "wall_seconds": 18.603675466,
+  "history": [
+    {
+      "step": 0,
+      "train_nll": 3.0205130577087402,
+      "validation_nll": 2.9413552284240723,
+      "tokens": 7886,
+      "gradient_norm": 3.5993878841400146
+    },
+    {
+      "step": 100,
+      "train_nll": 2.8514397144317627,
+      "validation_nll": 2.864593029022217,
+      "tokens": 791133,
+      "gradient_norm": 0.33882972598075867
+    },
+    {
+      "step": 200,
+      "train_nll": 2.865206241607666,
+      "validation_nll": 2.8619000911712646,
+      "tokens": 1574633,
+      "gradient_norm": 0.27446117997169495
+    },
+    {
+      "step": 300,
+      "train_nll": 2.8596725463867188,
+      "validation_nll": 2.8571298122406006,
+      "tokens": 2356419,
+      "gradient_norm": 0.29184648394584656
+    },
+    {
+      "step": 400,
+      "train_nll": 2.832775831222534,
+      "validation_nll": 2.8541877269744873,
+      "tokens": 3137376,
+      "gradient_norm": 0.2422810047864914
+    },
+    {
+      "step": 500,
+      "train_nll": 2.836629629135132,
+      "validation_nll": 2.8535234928131104,
+      "tokens": 3923266,
+      "gradient_norm": 0.29067933559417725
+    },
+    {
+      "step": 600,
+      "train_nll": 2.8422162532806396,
+      "validation_nll": 2.8507888317108154,
+      "tokens": 4708003,
+      "gradient_norm": 0.2993464171886444
+    },
+    {
+      "step": 700,
+      "train_nll": 2.855684757232666,
+      "validation_nll": 2.849799633026123,
+      "tokens": 5489912,
+      "gradient_norm": 0.28183454275131226
+    },
+    {
+      "step": 800,
+      "train_nll": 2.848207712173462,
+      "validation_nll": 2.8478593826293945,
+      "tokens": 6272497,
+      "gradient_norm": 0.2258777916431427
+    },
+    {
+      "step": 900,
+      "train_nll": 2.8243913650512695,
+      "validation_nll": 2.8473448753356934,
+      "tokens": 7055794,
+      "gradient_norm": 0.31362980604171753
+    },
+    {
+      "step": 1000,
+      "train_nll": 2.8249924182891846,
+      "validation_nll": 2.8441953659057617,
+      "tokens": 7840360,
+      "gradient_norm": 0.3383449614048004
+    },
+    {
+      "step": 1100,
+      "train_nll": 2.8393232822418213,
+      "validation_nll": 2.843360185623169,
+      "tokens": 8625284,
+      "gradient_norm": 0.28327664732933044
+    },
+    {
+      "step": 1200,
+      "train_nll": 2.8573951721191406,
+      "validation_nll": 2.8414011001586914,
+      "tokens": 9406985,
+      "gradient_norm": 0.29200735688209534
+    },
+    {
+      "step": 1300,
+      "train_nll": 2.8405253887176514,
+      "validation_nll": 2.8408381938934326,
+      "tokens": 10193517,
+      "gradient_norm": 0.26804599165916443
+    },
+    {
+      "step": 1400,
+      "train_nll": 2.8353168964385986,
+      "validation_nll": 2.837770938873291,
+      "tokens": 10974412,
+      "gradient_norm": 0.29355815052986145
+    },
+    {
+      "step": 1499,
+      "train_nll": 2.8341333866119385,
+      "validation_nll": 2.8364381790161133,
+      "tokens": 11750198,
+      "gradient_norm": 0.24919292330741882
+    }
+  ]
+}

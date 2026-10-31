@@ -10,8 +10,10 @@ This project downloads the full four-site table distributed by
 `85692d808dcd3ae54fa2ac31f4e590858d4582369b6c7b05df299b9b6c383bff`.
 
 FLIP attributes the original eLife data to CC BY 4.0 and its modified dataset to
-AFL-3.0. Raw or processed data are downloaded locally and are not redistributed
-in this repository. The code's MIT license does not supersede dataset terms.
+AFL-3.0. The complete source table is downloaded locally and is not redistributed
+in this repository. Run artifacts contain queried subsets and derived summaries,
+with the same source attribution. The code's MIT license does not supersede
+the data terms, which continue to apply to those records.
 
 Two details matter:
 

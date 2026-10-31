@@ -23,6 +23,41 @@ from-scratch language-model training on a sampled UniProt/Swiss-Prot corpus.
 - Label-independent pool assignment, frozen recommendations, and a metric verifier.
 - A bounded, finite Modal GPU job; no always-on service or persistent GPU allocation.
 
+## Measured results
+
+The completed GPU study trained a **3,203,072-parameter transformer from random
+weights on 11,750,198 amino-acid targets**, using 28,764 sampled training proteins
+and 3,236 validation proteins. It then adapted the model to GB1 and compared six
+acquisition/post-training methods over five seeds, with 128 common initial
+measurements and 256 additional queries per method. Recommendations were frozen
+on a disjoint 4,096-variant evaluation pool before its fitness values were read.
+
+| Method | Acquired hits above wild type, mean | Held-out top-20 mean fitness |
+|---|---:|---:|
+| Random | 5.6 | 0.038 |
+| Frozen transformer | 11.6 | 0.035 |
+| Reward-weighted SFT | 26.2 | 1.125 |
+| PPO | 13.0 | 0.433 |
+| DPO | 31.8 | 0.986 |
+| Random forest UCB | 49.0 | 1.769 |
+
+In this configuration, DPO and PPO improved the held-out average over the frozen
+prior. Reward-weighted SFT was a strong neural baseline, and random-forest UCB
+had the highest averages. The useful result is a controlled comparison, including
+the simpler methods that win. Five seeds on one four-site landscape do not
+establish a general algorithm ranking.
+
+[Full GPU report, every seed, and variability](results/gpu-study/RESULTS.md) ·
+[Three-seed CPU pilot](results/cpu-pilot/RESULTS.md)
+
+![Held-out measured fitness](results/gpu-study/figures/heldout.png)
+
+The cloud run is complete and its app is stopped. Training code is frozen at
+`fdadc25`; later commits add reports and documentation. Exact source hashes and
+environment versions are in `results/gpu-study/protocol_frozen.json`. Checkpoints
+and the complete original GPU run archive are available in the
+[v0.1.0 release](https://github.com/JoshuaDavid7/protein-feedback-lab/releases/tag/v0.1.0).
+
 ## Run locally
 
 Python 3.11 or 3.12. Intel macOS uses PyTorch 2.2.2; the GPU runner pins PyTorch
@@ -32,7 +67,7 @@ Python 3.11 or 3.12. Intel macOS uses PyTorch 2.2.2; the GPU runner pins PyTorch
 uv venv --python 3.12
 # On Intel macOS:
 uv pip install 'torch==2.2.2' 'numpy<2'
-uv pip install -e '.[dev]'
+uv pip install '.[dev]'
 source .venv/bin/activate
 pytest -q
 protein-feedback fetch
@@ -47,8 +82,8 @@ Completed output directories cannot be overwritten.
 ## GPU study
 
 ```bash
-uv pip install -e '.[cloud]'
-modal token new
+uv pip install '.[cloud]'
+modal token new --expires-in 12h
 modal run cloud/modal_run.py --output cloud-output/gpu-study.zip
 ```
 
@@ -67,9 +102,29 @@ are planning estimates, not a provider-enforced account spending limit. See
 - [Data provenance and benchmark pitfalls](docs/DATA.md)
 - [Questions to understand before discussing the project](docs/INTERVIEW_GUIDE.md)
 
-Published run reports will appear under `results/`, including every method and
-seed, learning curves, frozen recommendations, checksums and software versions.
-No claims of algorithm superiority are made before those runs are complete.
+Published run reports under `results/` include every method and seed, learning
+curves, frozen recommendations, checksums and software versions. Large checkpoint
+files are kept in release assets instead of Git history. The GPU SKU requested
+was A100-40GB; the runtime reported an A100-SXM4-80GB device. The manifest records
+the observed hardware. Numerical identity across different hardware or PyTorch
+versions is not promised.
+
+## Inspect a trained policy
+
+After extracting the release archive:
+
+```python
+from pathlib import Path
+from protein_feedback.data import encode
+from protein_feedback.model import ProteinTransformer, score_variants
+
+policy = ProteinTransformer.load(Path("models/11_dpo.pt"), device="cpu").eval()
+scores = score_variants(policy, encode(["VDGV", "AAAA"]), device="cpu")
+print(scores.tolist())
+```
+
+These are action-sequence log probabilities, not predicted binding constants.
+The exact 56-aa context and four variable positions are defined in `data.py`.
 
 ## Method references
 

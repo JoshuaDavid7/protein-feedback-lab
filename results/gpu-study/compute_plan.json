@@ -1,0 +1,11 @@
+{
+  "gpu": "A100-40GB",
+  "cpu": 2,
+  "memory_gib": 16,
+  "timeout_seconds": 14400,
+  "planned_execution_upper_usd": 9.283968,
+  "planning_ceiling_including_overhead_usd": 20.0,
+  "user_budget_usd": 50.0,
+  "pricing_source": "https://modal.com/pricing",
+  "actual_bill": "Consult the provider dashboard; not inferred from model wall time."
+}

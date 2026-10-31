@@ -12,7 +12,7 @@ dependencies = ["numpy>=1.26,<2", "torch>=2.2,<3", "scipy>=1.11", "scikit-learn>
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]
-cloud = ["modal==1.6.3", "cbor2<6"]
+cloud = ["modal==1.6.3", "cbor2==5.6.5"]
 
 [project.scripts]
 protein-feedback = "protein_feedback.cli:main"
